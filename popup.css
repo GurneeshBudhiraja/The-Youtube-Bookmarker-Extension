@@ -1,0 +1,67 @@
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f7f7f7;
+  margin: 0;
+  padding: 10px;
+}
+
+.popup-container {
+  width: 350px;
+  max-height: 280px;
+  overflow-y: auto;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.popup-heading {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.cta-text {
+  font-size: 14px;
+  color: #666666;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.bookmark-item {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background-color: #f0f0f0;
+  margin-bottom: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.bookmark-item:hover {
+  background-color: #e0e0e0;
+}
+
+.bookmark-text {
+  flex: 1;
+  font-size: 14px;
+  color: #333333;
+}
+
+.delete-button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #ff3860;
+  font-size: 16px;
+  transition: color 0.3s ease;
+  margin-right: 8px;
+}
+
+.delete-button:hover {
+  color: #e71d36;
+}
