@@ -64,6 +64,7 @@ const addBookmarkButton = () => {
     border: "2px solid #78b0fc",
     margin: "0 18px 8px",
     "border-radius": "50%",
+    "background-color": "#fff",
   });
   bookmarkButton.title = "Bookmark this video";
   rightControls.prepend(bookmarkButton);

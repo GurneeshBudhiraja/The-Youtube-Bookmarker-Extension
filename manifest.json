@@ -17,7 +17,6 @@
       "js": ["content-script.js"]
     }
   ],
-  "host_permissions": ["https://www.youtube.com/*"],
   "icons": {
     "16": "assets/icon.png",
     "48": "assets/icon.png",
