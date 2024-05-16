@@ -11,22 +11,41 @@ let currentVideoTime = null;
             document.getElementsByClassName("video-stream")[0].currentTime;
           const formattedTime = formatCurrentVideoTime(currentVideoTime);
           console.log("Current video time: ", formattedTime);
-          sendMessage({action:"addBookmark", time:formattedTime});
+          addLocalStorage(formattedTime);
         });
       }, 2000);
+    } else if (message.action === "changeCurrentTime") {
+      document.getElementsByClassName("video-stream")[0].currentTime =
+        message.bookmarkTimeSeconds;
+      document
+        .getElementsByClassName("video-stream")[0]
+        .play()
+        .then(() => console.log("Playing video"));
+    } else if (message.action === "deleteBookmark") {
+      const { youtubeVideoId } = message;
+      const { bookmarks: newBookmarks } = message;
+      chrome.storage.sync.set({ [youtubeVideoId]: newBookmarks }).then(() => {
+        console.log("Bookmark deleted");
+        return;
+      });
     }
   });
 })();
 
 const formatCurrentVideoTime = (time) => {
-  const hours = Math.floor(time / 3600).toString().padStart(2, "0");
-  const minutes = Math.floor((time % 3600) / 60).toString().padStart(2, "0");
-  const seconds = Math.floor(time % 60).toString().padStart(2, "0");
+  const hours = Math.floor(time / 3600)
+    .toString()
+    .padStart(2, "0");
+  const minutes = Math.floor((time % 3600) / 60)
+    .toString()
+    .padStart(2, "0");
+  const seconds = Math.floor(time % 60)
+    .toString()
+    .padStart(2, "0");
   return `${hours}:${minutes}:${seconds}`;
 };
 
-
-const addBookmarkButton=()=>{
+const addBookmarkButton = () => {
   console.log("Adding bookmark button");
   const rightControls =
     document.getElementsByClassName("ytp-right-controls")[0];
@@ -37,7 +56,7 @@ const addBookmarkButton=()=>{
   bookmarkButton.id = "bookmarkButton";
   bookmarkButton.src = chrome.runtime.getURL("assets/bookmark.png");
   bookmarkButton.alt = "Bookmark";
-  
+
   Object.assign(bookmarkButton.style, {
     width: "30px",
     height: "30px",
@@ -49,10 +68,35 @@ const addBookmarkButton=()=>{
   bookmarkButton.title = "Bookmark this video";
   rightControls.prepend(bookmarkButton);
   return bookmarkButton;
-}
+};
 
-const sendMessage = async (messageObject) => {
-  console.log(messageObject);
-  await chrome.runtime.sendMessage(messageObject);
-  
-}
+const addLocalStorage = async (formattedTime) => {
+  let localStorageBookmarks = [];
+  const currentVideoId = window.location.search.split("v=")[1];
+  localStorageBookmarks = await fetchLocalStorage(currentVideoId);
+  if (!localStorageBookmarks.includes(formattedTime)) {
+    localStorageBookmarks.push(formattedTime);
+    chrome.storage.sync.set(
+      {
+        [currentVideoId]: localStorageBookmarks,
+      },
+      () => {
+        console.log("Bookmark added and saved");
+      }
+    );
+  }
+  return;
+};
+
+const fetchLocalStorage = (youtubeVideoId) => {
+  return new Promise((resolve) => {
+    chrome.storage.sync.get([youtubeVideoId]).then((result) => {
+      if (result[youtubeVideoId] && result[youtubeVideoId].length > 0) {
+        const bookmarks = result[youtubeVideoId];
+        resolve(bookmarks);
+      } else {
+        resolve([]);
+      }
+    });
+  });
+};
